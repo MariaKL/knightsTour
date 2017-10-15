@@ -47,14 +47,15 @@ public class Knights implements ActionListener{
 	
     private void stop(boolean solved){
     	timer.stop();
+    	displayTime();
 		if(!solved)
 			UI.println("NO SOLUTION FOUND");
 		else
 			UI.println("SOLUTION FOUND");
+		repaint();
     }
 	
 	public void changeSize(int size){
-		System.out.println(size + " size set");
 		board = new Board(size);
 		repaint();
 	}
@@ -123,13 +124,14 @@ public class Knights implements ActionListener{
 			}
 		}
 		else msecs+=500;
+		displayTime();
+		repaint();
+	}
+	
+	private void displayTime(){
 		UI.clearText();
-    	UI.println("Timer running");
 		UI.println("Time is:");
 		UI.printf("%d:%d:%d\n", mins, secs, msecs);
-		repaint();
-		if(secs%10==0)
-			System.out.println(board);
 	}
 	
 	public static void main(String[] args) {

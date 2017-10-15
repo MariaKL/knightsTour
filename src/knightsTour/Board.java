@@ -10,6 +10,7 @@ public class Board {
 	int left = 50;
 	int top = 50;
 	int sqsize = 80;
+	Color color = Color.BLUE;
 	
 	public Board(){
 		size = 5;
@@ -68,8 +69,6 @@ public class Board {
 	 * If the cell was not visited then a black cell is drawn.
 	 */
 	public void redraw(){
-		UI.setColor(Color.BLACK);
-		UI.drawRect(left, top, sqsize*size, sqsize*size);
 		for(int row = 0; row < size; row++){
 			for(int col = 0; col < size; col++){
 				if(backBoard[row][col].num==-1){
@@ -77,30 +76,26 @@ public class Board {
 					UI.fillRect(left+col*sqsize, top+row*sqsize, sqsize, sqsize);
 				}
 				else{
-					UI.setColor(getColor(backBoard[row][col].num/(size*size)));
+					int red = color.getRed()+Math.abs(backBoard[row][col].num)*size;
+					if(red>255) red = 255;
+					int green = color.getGreen()+Math.abs(backBoard[row][col].num)*size;
+					if(green>255) green = 255;
+					int blue = color.getBlue();
+					if(blue>255) blue = 255;
+					UI.setColor(new Color(red, green, blue));
 					UI.fillRect(left+col*sqsize, top+row*sqsize, sqsize, sqsize);
 					UI.setColor(Color.BLACK);
 					UI.setFontSize(20);
 					UI.drawString(backBoard[row][col].num+"", left+col*sqsize + sqsize/2, top+row*sqsize + sqsize/2 + 5);
-					UI.setColor(Color.BLACK);
-					UI.drawRect(left+col*sqsize, top+row*sqsize, sqsize, sqsize);
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Calculated the colour of the cell based off the move number.
-	 * From https://stackoverflow.com/questions/340209/generate-colors-between-red-and-green-for-a-power-meter
-	 * @param power
-	 * @return
-	 */
-	public Color getColor(double power){
-	    double H = power * 0.4; // Hue (note 0.4 = Green)
-	    double S = 0.9; // Saturation
-	    double B = 0.9; // Brightness
-
-	    return Color.getHSBColor((float)H, (float)S, (float)B);
+		UI.setColor(Color.BLACK);
+		for(int i = 0; i < size; i++){
+			UI.drawLine(left+i*sqsize, top, left+i*sqsize, top+size*sqsize);
+			UI.drawLine(left, top+i*sqsize, left+size*sqsize, top+i*sqsize);
+		}
+		UI.drawRect(left, top, sqsize*size, sqsize*size);
 	}
 	
 	public String toString(){

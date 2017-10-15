@@ -5,6 +5,7 @@ public class Tour {
 	private final int[] x = {2, 2, 1, 1, -1, -1, -2, -2}; 
 	private final int[] y = {1, -1, 2, -2, 2, -2, 1, -1};
 	boolean solved = false;
+	boolean closed = false;
 	
 	public Tour(){
 		board = Knights.board;
@@ -18,10 +19,10 @@ public class Tour {
 		for(int row = 0; row < board.size; row++){
 			for(int col = 0; col < board.size; col++){
 				Knights.resetBoard();
-				if(run(col, row, 0))
+				if(run(col, row, 0)){
 					solved = true;
-				else
-					board.set(col, row, -1);
+					return;
+				}
 			}
 		}
 	}
@@ -39,15 +40,21 @@ public class Tour {
 		for(int pos = 0; pos < x.length; pos++){
 			int newCol = col+x[pos];
 			int newRow = row+y[pos];
-			if(isValidMove(newCol, newRow)){
+			if(closed){
+				for(int lastPos = 0; lastPos < x.length; lastPos++){
+					int newCol2 = col+x[pos];
+					int newRow2 = row+y[pos];
+					if(isClosedTour(newCol2, newRow2))
+						return true;
+				}
+			}
+			else if(isValidMove(newCol, newRow)){
 				board.set(newCol, newRow, col, row, num);
-				//System.out.printf("TRYING POS %d, %d - MOVE NUM: %d\n", newCol, newRow, num);
-				if(run(newCol, newRow, num++))
+				if(run(newCol, newRow, num+1))
 					return true;
-				else
-					board.set(newCol,  newRow, -1);
 			}
 		}
+		board.set(col, row, -1);
 		return false;
 	}
 	
@@ -59,5 +66,9 @@ public class Tour {
 	 */
 	private boolean isValidMove(int x, int y){
 		return x>=0 && x<board.size && y>=0 && y<board.size && board.get(x, y) == -1;
+	}
+	
+	private boolean isClosedTour(int x, int y){
+		return x>=0 && x<board.size && y>=0 && y<board.size && board.get(x, y) == 0;
 	}
 }
