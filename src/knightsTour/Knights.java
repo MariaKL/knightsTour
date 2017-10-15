@@ -34,8 +34,11 @@ public class Knights implements ActionListener{
 		board = new Board(board.size);
 		timer=new Timer(500, this);
 		start();
+    	final long startTime = System.currentTimeMillis();
     	Tour tour = new Tour();
+    	final long endTime = System.currentTimeMillis();
     	stop(tour.solved);
+    	UI.println("System time taken: " + (endTime - startTime));
 	}
 	
     private void start(){
